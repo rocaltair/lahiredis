@@ -1,25 +1,26 @@
-SLIB=liblahiredis.a
-OFILES= lahiredis.o
+SLIB = liblahiredis.a
+OBJS = lahiredis.o
+CFILES = lahiredis.c
 CC = gcc
-AR = ar
-CFLAGS = -Wall -c -I. -ggdb
-
+AR = ar rvc 
 #BACK_END : 0 for LAHIREDIS_BACKEND_LIBEV, 1 for LAHIREDIS_BACKEND_LIBEVENT
 BACK_END = 0
 RM = rm -f 
 
+CFLAGS = -Wall -c -I. -ggdb -DLAHIREDIS_BACKEND=$(BACK_END)
+
 all: $(SLIB)
 
-$(OFILES): lahiredis.c
+$(OBJS): $(CFILES)
 
 %.o: %.c
-	$(CC) -DLAHIREDIS_BACKEND=$(BACK_END) $(CFLAGS) $*.c
+	$(CC) $(CFLAGS) $*.c
 
-$(SLIB): $(OFILES)
-	$(AR) rvc $(SLIB) $(OFILES)
+$(SLIB): $(OBJS)
+	$(AR) $(SLIB) $(OBJS)
 
 clean:
-	$(RM) *.o $(SLIB)
+	$(RM) $(OBJS) $(SLIB)
 
 .PHONY : clean
 

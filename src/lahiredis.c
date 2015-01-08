@@ -37,15 +37,13 @@
 #include <hiredis/hiredis.h>
 #include <hiredis/async.h>
 #include <assert.h>
-#include <ev.h>
-/*
- * #include <ev.h>
- * #include <event2/event.h>
- */
 
 /*
  * #define LAHIREDIS_ENABLE_REDIS_DEBUG 1
  */
+/*
+* #define LAHIREDIS_BACKEND 0
+*/
 
 #ifdef LAHIREDIS_ENABLE_REDIS_DEBUG
 #	define LAHIREDIS_DLOG(fmt, args...) fprintf(stderr, fmt "\n", ##args)
@@ -56,18 +54,19 @@
 #define LAHIREDIS_BACKEND_LIBEV 0
 #define	LAHIREDIS_BACKEND_LIBEVENT 1
 
-#define LAHIREDIS_BACKEND 0
 
 #ifdef LAHIREDIS_BACKEND
-#	if (LAHIREDIS_BACKEND == LAHIREDIS_BACKEND_LIBEV)
-#		include <hiredis/adapters/libev.h>
-#	elif (LAHIREDIS_BACKEND == LAHIREDIS_BACKEND_LIBEVENT)
-#		include <hiredis/adapters/libevent.h>
-#	else
-#		error "LAHIREDIS_BACKEND not defined! 0  for LAHIREDIS_BACKEND_LIBEV, and 1 for LAHIREDIS_BACKEND_LIBEVENT"
-#	endif
+#  if (LAHIREDIS_BACKEND == LAHIREDIS_BACKEND_LIBEV)
+#    include <ev.h>
+#    include <hiredis/adapters/libev.h>
+#  elif (LAHIREDIS_BACKEND == LAHIREDIS_BACKEND_LIBEVENT)
+#    include <event2/event.h>
+#    include <hiredis/adapters/libevent.h>
+#  else
+#    error "LAHIREDIS_BACKEND not defined! 0  for LAHIREDIS_BACKEND_LIBEV, and 1 for LAHIREDIS_BACKEND_LIBEVENT"
+#  endif
 #else
-#	error "LAHIREDIS_BACKEND not defined!  0 for LAHIREDIS_BACKEND_LIBEV, and 1 for LAHIREDIS_BACKEND_LIBEVENT"
+#  error "LAHIREDIS_BACKEND not defined!  0 for LAHIREDIS_BACKEND_LIBEV, and 1 for LAHIREDIS_BACKEND_LIBEVENT"
 #endif
 
 #define LIBNAME_LAHIREDIS "lahiredis"
@@ -87,10 +86,10 @@
 #define LAHIREDIS_EVENT_BASE_CLASS "lahiredis{event_base}"
 
 #if LUA_VERSION_NUM < 502
-#	define luaL_newlib(L,l) (lua_newtable(L), luaL_register(L,NULL,l))
-#	ifndef LUA_RIDX_MAINTHREAD 
-#		define LUA_RIDX_MAINTHREAD	1
-#	endif
+#  define luaL_newlib(L,l) (lua_newtable(L), luaL_register(L,NULL,l))
+#  ifndef LUA_RIDX_MAINTHREAD 
+#    define LUA_RIDX_MAINTHREAD	1
+#  endif
 #endif
 
 #define LAHIREDIS_MAXARGS 256
@@ -101,7 +100,7 @@
 
 
 #ifndef LAHIREDIS_LUA_SAFE_CALL
-#	define LAHIREDIS_LUA_SAFE_CALL lua_safe_call
+#  define LAHIREDIS_LUA_SAFE_CALL lua_safe_call
 #endif
 
 #define LAHIREDIS_IS_CONN_CONNECTED(conn)\

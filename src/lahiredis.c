@@ -46,9 +46,9 @@
 */
 
 #ifdef LAHIREDIS_ENABLE_REDIS_DEBUG
-#	define LAHIREDIS_DLOG(fmt, args...) fprintf(stderr, fmt "\n", ##args)
+#  define LAHIREDIS_DLOG(fmt, args...) fprintf(stderr, fmt "\n", ##args)
 #else
-#	define LAHIREDIS_DLOG(fmt, args...)
+#  define LAHIREDIS_DLOG(fmt, args...)
 #endif
 
 #define LAHIREDIS_BACKEND_LIBEV 0

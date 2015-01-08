@@ -249,6 +249,7 @@ int set_event_base(lua_State *L, struct event *base, const char *base_event_name
 {
 	*(redisAsyncContext **)lua_newuserdata(L, sizeof(void *)) = base;	/*would never be free*/
 	lua_setglobal(L, base_event_name);
+	return 0;
 }
 #endif
 
@@ -589,7 +590,7 @@ static void set_info (lua_State *L) {
 
 int luaopen_lahiredis (lua_State *L) {
 #if LUA_VERSION_NUM < 502
-#	pragma message "set main thread LUA_RIDX_MAINTHREAD"
+# pragma message "set main thread LUA_RIDX_MAINTHREAD"
 	/* you should call this in main thread*/
 	assert(lua_pushthread(L));
 	lua_rawseti(L,  LUA_REGISTRYINDEX, LUA_RIDX_MAINTHREAD);
